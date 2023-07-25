@@ -29,14 +29,15 @@ def write_gpt_log(filename, response, instructions, transcript):
     filepath = os.path.join("logs", filename)
     with open(filepath, "w") as f:
         f.write(response)
-        f.write("\n\n\n\n\n\n-------INSTRUCTIONS--------")
+        f.write("\n\n\n\n\n\n-------SYSTEM--------\n")
         f.write(instructions)
-        f.write("\n\n\n\n\n\n-------TRANSCRIPT--------")
+        f.write("\n\n\n\n\n\n-------USER--------\n")
         f.write(transcript)
     return len(response.splitlines())
 
 
 def gpt35_16k(sys, usr):
+    print('GPT 3.5 Turbo 16K Called')
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo-16k",  
         messages=[
@@ -47,6 +48,7 @@ def gpt35_16k(sys, usr):
     return completion
 
 def gpt35(sys, usr):
+    print('GPT 3.5 Turbo Called')
     completion = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",  
         messages=[
@@ -67,7 +69,7 @@ def main():
     ## CONTROLS ##
     chat_on = True
     summary_count = 3
-    transcript = read_ref("tw_semi_transcript")
+    transcript = read_ref("micron_transcript")
     system_instructions = read_message("01_system_topics_no_categories")
 
 
@@ -119,6 +121,32 @@ def main():
     # with open(os.path.join("logs", log), "r") as f:
     #     log_content = f.read()
 
+def test_c_s():
+    # Load API Key
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
+
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+
+    ### Chat GPT
+    responses = list()
+
+    ## First Grab out the points multiple times
+
+    all_responses = read_ref("micron__all_responses")
+    ### Combine
+    combine_sys = read_message("01_system_combine")
+    ## GPT CALL
+    no_dupes = gpt35(combine_sys, all_responses)
+    write_gpt_log(log_time+"_c",completion_text(no_dupes), combine_sys, all_responses)
+
+    ### Sorted
+    sort_sys = read_message("01_system_sort")
+    ## GPT CALL
+    sorted = gpt35(sort_sys,completion_text(no_dupes))
+    write_gpt_log(log_time+"_s",completion_text(sorted), sort_sys, completion_text(no_dupes))
+
+
 
 @app.route('/')
 def index():
@@ -128,6 +156,6 @@ def index():
     # return render_template('menu.html', menu=menu)
 
 if __name__ == '__main__':
-    main()
+    test_c_s()
     app.run()
 
