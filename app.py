@@ -58,6 +58,17 @@ def gpt35(sys, usr):
         )
     return completion
 
+def gpt4(sys, usr):
+    print('GPT 4 Turbo Called')
+    completion = openai.ChatCompletion.create(
+        model="gpt-4",  
+        messages=[
+            {"role": "system", "content": sys},
+            {"role": "user", "content": usr}
+        ]
+        )
+    return completion
+
 def completion_text(c):
     return c["choices"][0]["message"]["content"]
 
@@ -66,11 +77,23 @@ def main():
     load_dotenv()
     openai.api_key = os.getenv('API_KEY')
 
-    ## CONTROLS ##
+
+    ####################
+    ##### CONTROLS #####
+    ####################
+
     chat_on = True
     summary_count = 3
+    combine_count = 2
+
     transcript = read_ref("micron_transcript")
     system_instructions = read_message("01_system_topics_no_categories")
+    combine_sys = read_message("01_system_combine")
+    sort_sys = read_message("01_system_sort")
+
+    ####################
+    ####################
+    ####################
 
 
     log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
@@ -93,18 +116,18 @@ def main():
             all_responses += completion_text(responses[i]) + '\n'
             log = write_gpt_log(log_time+"_"+str(i),completion_text(responses[i]), system_instructions, transcript)
 
-
         ### Combine
-        combine_sys = read_message("01_system_combine")
-        ## GPT CALL
-        no_dupes = gpt35(combine_sys, all_responses)
-        write_gpt_log(log_time+"_c",completion_text(no_dupes), combine_sys, all_responses)
+        last_combined = all_responses
+        for i in range(combine_count):
+            prev_combined = last_combined
+            # GPT CALL
+            last_combined = completion_text(gpt35(combine_sys, last_combined))
+            write_gpt_log(log_time+"_c_"+str(i),last_combined, combine_sys, prev_combined)
 
         ### Sorted
-        sort_sys = read_message("01_system_sort")
         ## GPT CALL
-        sorted = gpt35(sort_sys,completion_text(no_dupes))
-        write_gpt_log(log_time+"_s",completion_text(sorted), sort_sys, completion_text(no_dupes))
+        sorted = gpt35(sort_sys,last_combined)
+        write_gpt_log(log_time+"_s",completion_text(sorted), sort_sys, last_combined)
 
 
     else:
@@ -133,20 +156,41 @@ def test_c_s():
 
     ## First Grab out the points multiple times
 
-    all_responses = read_ref("micron__all_responses")
+    all_responses = read_ref("micron_all_responses")
     ### Combine
     combine_sys = read_message("01_system_combine")
     ## GPT CALL
     no_dupes = gpt35(combine_sys, all_responses)
-    write_gpt_log(log_time+"_c",completion_text(no_dupes), combine_sys, all_responses)
+    write_gpt_log(log_time+"_c_test",completion_text(no_dupes), combine_sys, all_responses)
+    ## GPT CALL
+    # Combine 2
+    no_dupes2 = gpt35(combine_sys, completion_text(no_dupes))
+    write_gpt_log(log_time+"_c_test_2",completion_text(no_dupes2), combine_sys, completion_text(no_dupes))
 
     ### Sorted
     sort_sys = read_message("01_system_sort")
     ## GPT CALL
-    sorted = gpt35(sort_sys,completion_text(no_dupes))
-    write_gpt_log(log_time+"_s",completion_text(sorted), sort_sys, completion_text(no_dupes))
+    sorted = gpt35(sort_sys,completion_text(no_dupes2))
+    write_gpt_log(log_time+"_s_test",completion_text(sorted), sort_sys, completion_text(no_dupes2))
 
+def test_gpt4():
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
 
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+    response = gpt4("", "Hello there, what model are you?")
+    write_gpt_log(log_time+"_gpt4_test",completion_text(response), "", "Hello there, what model are you?")
+    print(completion_text(response))
+
+def test_gpt35_16K():
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
+
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+    usr = read_message('35_test_usr')
+    response = gpt35_16k("", usr)
+    write_gpt_log(log_time+"_gpt35_test",completion_text(response), "", usr)
+    print(completion_text(response))
 
 @app.route('/')
 def index():
@@ -156,6 +200,6 @@ def index():
     # return render_template('menu.html', menu=menu)
 
 if __name__ == '__main__':
-    test_c_s()
+    main()
     app.run()
 
