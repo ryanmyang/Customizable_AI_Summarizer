@@ -1,3 +1,4 @@
-.env
-logs/*
-env/*
+backend/.env
+backend/logs/*
+backend/env/*
+frontend/node_modules

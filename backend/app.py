@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from dotenv import load_dotenv
+from flask import jsonify
 import openai
 import os
 import io
@@ -10,15 +11,20 @@ log_content = ""
 
 # Input
 def read_ref(file):
-    filepath = os.path.join("logs", "refs", file)
+    filepath = os.path.join("backend", "refs", file)
     with open(filepath, "r") as f:
         output = f.read()
     return output
 def read_message(file):
-    filepath = os.path.join("messages", file)
+    filepath = os.path.join("backend", "messages", file)
     with open(filepath, "r") as f:
         output = f.read()
     return output
+
+@app.route('/api/test-api')
+def test_api():
+    return jsonify({"response": "Test API"})
+
 
 
 
@@ -26,7 +32,7 @@ def read_message(file):
 
 # Write to
 def write_gpt_log(filename, response, instructions, transcript):
-    filepath = os.path.join("logs", filename)
+    filepath = os.path.join("backend","logs", filename)
     with open(filepath, "w") as f:
         f.write(response)
         f.write("\n\n\n\n\n\n-------SYSTEM--------\n")
@@ -72,6 +78,55 @@ def gpt4(sys, usr):
 def completion_text(c):
     return c["choices"][0]["message"]["content"]
 
+def test_c_s():
+    # Load API Key
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
+
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+
+    ### Chat GPT
+    responses = list()
+
+    ## First Grab out the points multiple times
+
+    all_responses = read_ref("micron_all_responses")
+    ### Combine
+    combine_sys = read_message("01_system_combine")
+    ## GPT CALL
+    no_dupes = gpt35(combine_sys, all_responses)
+    write_gpt_log(log_time+"_c_test",completion_text(no_dupes), combine_sys, all_responses)
+    ## GPT CALL
+    # Combine 2
+    no_dupes2 = gpt35(combine_sys, completion_text(no_dupes))
+    write_gpt_log(log_time+"_c_test_2",completion_text(no_dupes2), combine_sys, completion_text(no_dupes))
+
+    ### Sorted
+    sort_sys = read_message("01_system_sort")
+    ## GPT CALL
+    sorted = gpt35(sort_sys,completion_text(no_dupes2))
+    write_gpt_log(log_time+"_s_test",completion_text(sorted), sort_sys, completion_text(no_dupes2))
+
+def test_gpt4():
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
+
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+    response = gpt4("", "Hello there, what model are you?")
+    write_gpt_log(log_time+"_gpt4_test",completion_text(response), "", "Hello there, what model are you?")
+    print(completion_text(response))
+
+def test_gpt35_16K():
+    load_dotenv()
+    openai.api_key = os.getenv('API_KEY')
+
+    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
+    usr = read_message('35_test_usr')
+    response = gpt35_16k("", usr)
+    write_gpt_log(log_time+"_gpt35_test",completion_text(response), "", usr)
+    print(completion_text(response))
+
+
 def main():
     # Load API Key
     load_dotenv()
@@ -83,10 +138,10 @@ def main():
     ####################
 
     chat_on = True
-    summary_count = 3
-    combine_count = 2
+    summary_count = 2
+    combine_count = 1
 
-    transcript = read_ref("micron_transcript")
+    transcript = read_ref("chevron")
     system_instructions = read_message("01_system_topics_no_categories")
     combine_sys = read_message("01_system_combine")
     sort_sys = read_message("01_system_sort")
@@ -141,56 +196,10 @@ def main():
     
         
     print(responses)
-    # with open(os.path.join("logs", log), "r") as f:
+    # with open(os.path.join("backend","logs", log), "r") as f:
     #     log_content = f.read()
 
-def test_c_s():
-    # Load API Key
-    load_dotenv()
-    openai.api_key = os.getenv('API_KEY')
 
-    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
-
-    ### Chat GPT
-    responses = list()
-
-    ## First Grab out the points multiple times
-
-    all_responses = read_ref("micron_all_responses")
-    ### Combine
-    combine_sys = read_message("01_system_combine")
-    ## GPT CALL
-    no_dupes = gpt35(combine_sys, all_responses)
-    write_gpt_log(log_time+"_c_test",completion_text(no_dupes), combine_sys, all_responses)
-    ## GPT CALL
-    # Combine 2
-    no_dupes2 = gpt35(combine_sys, completion_text(no_dupes))
-    write_gpt_log(log_time+"_c_test_2",completion_text(no_dupes2), combine_sys, completion_text(no_dupes))
-
-    ### Sorted
-    sort_sys = read_message("01_system_sort")
-    ## GPT CALL
-    sorted = gpt35(sort_sys,completion_text(no_dupes2))
-    write_gpt_log(log_time+"_s_test",completion_text(sorted), sort_sys, completion_text(no_dupes2))
-
-def test_gpt4():
-    load_dotenv()
-    openai.api_key = os.getenv('API_KEY')
-
-    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
-    response = gpt4("", "Hello there, what model are you?")
-    write_gpt_log(log_time+"_gpt4_test",completion_text(response), "", "Hello there, what model are you?")
-    print(completion_text(response))
-
-def test_gpt35_16K():
-    load_dotenv()
-    openai.api_key = os.getenv('API_KEY')
-
-    log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
-    usr = read_message('35_test_usr')
-    response = gpt35_16k("", usr)
-    write_gpt_log(log_time+"_gpt35_test",completion_text(response), "", usr)
-    print(completion_text(response))
 
 @app.route('/')
 def index():
@@ -200,6 +209,6 @@ def index():
     # return render_template('menu.html', menu=menu)
 
 if __name__ == '__main__':
-    main()
+    # main()
     app.run()
 
