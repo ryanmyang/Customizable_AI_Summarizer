@@ -139,9 +139,9 @@ def main():
 
     chat_on = True
     summary_count = 2
-    combine_count = 1
+    combine_count = 2
 
-    transcript = read_ref("chevron")
+    transcript = read_ref("albemarle")
     system_instructions = read_message("01_system_topics_no_categories")
     combine_sys = read_message("01_system_combine")
     sort_sys = read_message("01_system_sort")
@@ -209,6 +209,6 @@ def index():
     # return render_template('menu.html', menu=menu)
 
 if __name__ == '__main__':
-    # main()
+    main()
     app.run()
 
