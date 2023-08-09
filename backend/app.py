@@ -8,6 +8,7 @@ import datetime
 app = Flask(__name__)
 
 log_content = ""
+MODELS = ['gpt-3.5-turbo', 'gpt-3.5-turbo-16k']
 
 # Input
 def read_ref(file):
@@ -33,6 +34,7 @@ def test_api():
 # Write to
 def write_gpt_log(filename, response, instructions, transcript):
     filepath = os.path.join("backend","logs", filename)
+    instructions = "" if instructions is None else instructions
     with open(filepath, "w") as f:
         f.write(response)
         f.write("\n\n\n\n\n\n-------SYSTEM--------\n")
@@ -75,6 +77,27 @@ def gpt4(sys, usr):
         )
     return completion
 
+def gpt(model_num, sys,usr, log_name):
+    print('GPT Called: ' + MODELS[model_num])
+
+    if sys is not None:
+        completion = openai.ChatCompletion.create(
+            model=MODELS[model_num],  
+            messages=[
+                {"role": "system", "content": sys},
+                {"role": "user", "content": usr}
+            ]
+            )
+    else: 
+        completion = openai.ChatCompletion.create(
+            model=MODELS[model_num],  
+            messages=[
+                {"role": "user", "content": usr}
+            ]
+            )
+    write_gpt_log(log_name, completion_text(completion), sys, usr)
+    return completion
+
 def completion_text(c):
     return c["choices"][0]["message"]["content"]
 
@@ -94,8 +117,7 @@ def test_c_s():
     ### Combine
     combine_sys = read_message("01_system_combine")
     ## GPT CALL
-    no_dupes = gpt35(combine_sys, all_responses)
-    write_gpt_log(log_time+"_c_test",completion_text(no_dupes), combine_sys, all_responses)
+    no_dupes = gpt(0,combine_sys, all_responses,'_c_test')
     ## GPT CALL
     # Combine 2
     no_dupes2 = gpt35(combine_sys, completion_text(no_dupes))
@@ -141,10 +163,12 @@ def main():
     summary_count = 2
     combine_count = 2
 
-    transcript = read_ref("albemarle")
-    system_instructions = read_message("01_system_topics_no_categories")
-    combine_sys = read_message("01_system_combine")
-    sort_sys = read_message("01_system_sort")
+    transcript = read_ref("chevron")
+    transcript2 = read_ref("chevron_2")
+    system_instructions = read_message("system_extract")
+    system_questions = read_message("system_questions")
+    combine_sys = read_message("system_combine")
+    sort_sys = read_message("system_sort")
 
     ####################
     ####################
@@ -158,44 +182,44 @@ def main():
         quit()
 
     ### Chat GPT
-    responses = list()
 
     ## First Grab out the points multiple times
     if chat_on:
+
         all_responses = ""
         ### Grab out points a few times
         for i in range(summary_count):
 
             ## GPT CALL
-            responses.append(gpt35_16k(system_instructions, transcript))
-            all_responses += completion_text(responses[i]) + '\n'
-            log = write_gpt_log(log_time+"_"+str(i),completion_text(responses[i]), system_instructions, transcript)
+            all_responses += completion_text(gpt(1,system_instructions, transcript,log_time+"_e_"+str(i))) + '\n'
+            # all_responses += completion_text(gpt(1,system_instructions, transcript2,log_time+"_e2_"+str(i))) + '\n'
 
+        # question_answers = completion_text(gpt(0,"", read_message("system_questions2") + transcript,log_time+"_q"))
+        # all_responses += question_answers + '\n'
+# QUIT FOR TESTING
+        # quit()
         ### Combine
         last_combined = all_responses
         for i in range(combine_count):
             prev_combined = last_combined
             # GPT CALL
-            last_combined = completion_text(gpt35(combine_sys, last_combined))
-            write_gpt_log(log_time+"_c_"+str(i),last_combined, combine_sys, prev_combined)
+            last_combined = completion_text(gpt(0,combine_sys, last_combined,log_time+"_c_"+str(i)))
 
         ### Sorted
         ## GPT CALL
-        sorted = gpt35(sort_sys,last_combined)
-        write_gpt_log(log_time+"_s",completion_text(sorted), sort_sys, last_combined)
+        sorted = gpt(0,sort_sys,last_combined,log_time+"_s")
 
 
-    else:
-        for i in range(summary_count):
-            responses.append("Summary Test" + str(i))
-            log = write_gpt_log(log_time+"_"+str(i),responses[i], system_instructions, transcript)
+    # else:
+    #     for i in range(summary_count):
+    #         responses.append("Summary Test" + str(i))
+    #         log = write_gpt_log(log_time+"_"+str(i),responses[i], system_instructions, transcript)
 
     ## Then loop through the logs, pull out responses, and combine
     
     ## Then sort
     
-        
-    print(responses)
+    
     # with open(os.path.join("backend","logs", log), "r") as f:
     #     log_content = f.read()
 

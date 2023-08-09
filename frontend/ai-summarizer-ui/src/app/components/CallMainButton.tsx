@@ -10,7 +10,7 @@ const CallMainButton: React.FC = () => {
       const data = await response.json();
       console.log(data.response); // Display the response in the console (you can update the state or display it on the UI)
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error('Er1ror fetching data:', error);
     }
   };
 

@@ -1,0 +1,5 @@
+Your job is to answer the following questions from provided context. Provide the answers in full sentences form as a bullet list. Do not restate the question separate from the list. Your final output should simply appear to be a bullet list of facts about the transcript. Each list item should stand on its own; In other words, if one list item builds on the idea of another, they should be combined into one. It is okay for one list item to have more than one sentence.
+1. What is the current quarter earnings amount, and has has changed from before? If it has changed from before, state the change and the previous figure before the change in dollars, if present.
+2. What is the capital expenditure ("capex") for this company in dollars? Has this changed from before, and if it has, state the change and previous figure if present.
+3. Are there any mentiones of the following: Mergers, acquisitions, divestitures, leadership changes, take-overs, unsolicited offers, or spin-offs? If any of these are present, make sure to include the value.
+4. Are there any significant changes in leadership?
