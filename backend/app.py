@@ -143,9 +143,8 @@ def test_gpt35_16K():
     openai.api_key = os.getenv('API_KEY')
 
     log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
-    usr = read_message('35_test_usr')
-    response = gpt35_16k("", usr)
-    write_gpt_log(log_time+"_gpt35_test",completion_text(response), "", usr)
+    usr = read_ref('six_landscapes')
+    response = gpt(1,None, usr, log_time+'_hum2')
     print(completion_text(response))
 
 
@@ -233,6 +232,7 @@ def index():
     # return render_template('menu.html', menu=menu)
 
 if __name__ == '__main__':
-    main()
+    # main()
+    test_gpt35_16K()
     app.run()
 

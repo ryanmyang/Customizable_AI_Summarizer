@@ -12,6 +12,7 @@ export default async function addData(collection, id, data) {
         });
     } catch (e) {
         error = e;
+        console.log("addData Error: " + e)
     }
 
     return { result, error };
