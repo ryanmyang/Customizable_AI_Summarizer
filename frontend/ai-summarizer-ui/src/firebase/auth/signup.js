@@ -16,13 +16,11 @@ export default async function signUp(email, password) {
         if (result.user) {
             const uid = String(result.user.uid);
             
-            const currentDate = new Date();
-            const date_num = currentDate.getTime();
             console.log(uid)
 
-            await addData("users", "YyNuXTF42xdnnPz3Rqv5lCSixnj2", {
+            await addData("users", uid, {
                 email: email,
-                age: date_num
+                next_file: '000'
             });
         }
 
