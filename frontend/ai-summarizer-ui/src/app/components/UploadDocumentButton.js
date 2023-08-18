@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
 import getData from '@/firebase/firestore/getData';
 import addData from '@/firebase/firestore/addData';
+import { useToast } from './ToastContext';
 
 import Button from '@mui/material/Button';
 
 const UploadFileButton = () => {
   const { user } = useAuthContext();
   const [selectedFile, setSelectedFile] = useState(null);
-
+  const showToast = useToast();
   const handleFileChange = (event) => {
     const file = event.target.files && event.target.files[0];
 
@@ -17,7 +18,7 @@ const UploadFileButton = () => {
       if (fileType === 'text/plain') {
         setSelectedFile(file);
       } else {
-        alert('Please select a text file.');
+        showToast('Please upload a text file', 'error');
       }
     }
   };
@@ -50,7 +51,10 @@ const UploadFileButton = () => {
       });
       const newN = incrementFileString(n);
       await addData('users', user.uid, { next_file: newN });
+      showToast('Document Uploaded', 'success');
+      setSelectedFile(null);
     } catch (error) {
+      showToast('Upload Error', 'error');
       console.error('Error uploading document:', error);
     }
   }

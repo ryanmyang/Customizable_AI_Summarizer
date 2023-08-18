@@ -5,7 +5,7 @@ const Header = () => {
   return (
     <AppBar position="static">
       <Toolbar>
-        <Typography variant="h6">My App</Typography>
+        <Typography variant="h6">Custom GPT</Typography>
         {/* Add menu bar or navigation links here */}
       </Toolbar>
     </AppBar>

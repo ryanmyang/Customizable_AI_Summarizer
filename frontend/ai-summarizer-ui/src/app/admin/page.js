@@ -3,7 +3,8 @@ import React from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import UploadFileButton from "@/app/components/UploadDocumentButton";
-import PageContainer from '@/app/components/PageContainer'
+import PageContainer from '@/app/components/PageContainer';
+import DocumentList from '@/app/components/DocumentList';
 
 function Page() {
     const { user } = useAuthContext()
@@ -18,6 +19,8 @@ function Page() {
         <PageContainer>
             <h1>Only logged in users can view this page</h1>
             <UploadFileButton/>
+            <DocumentList/>
+
         </PageContainer>
     
     
