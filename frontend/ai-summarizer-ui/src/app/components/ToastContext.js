@@ -1,3 +1,4 @@
+'use client';
 // ToastContext.js
 import React, { createContext, useContext } from 'react';
 import { toast, ToastContainer } from 'react-toastify';

@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import UploadFileButton from "@/app/components/UploadDocumentButton";
 import PageContainer from '@/app/components/PageContainer';
 import DocumentList from '@/app/components/DocumentList';
+import Button from '@mui/material/Button';
+import { Container, Grid } from '@mui/material';
+
 
 function Page() {
     const { user } = useAuthContext()
@@ -15,13 +18,19 @@ function Page() {
     }, [user])
     console.log("User ID: "+user['uid']);
     console.log(user);
+
+    const handleNewSummaryButton = () => {
+        router.push("/summaries/new");
+    }
     return (
         <PageContainer>
-            <h1>Only logged in users can view this page</h1>
-            <UploadFileButton/>
-            <DocumentList/>
-
-        </PageContainer>
+      <Grid container justifyContent="flex-end" mb={2}>
+        <Button onClick={handleNewSummaryButton} variant="contained">
+          New Summary
+        </Button>
+      </Grid>
+      <DocumentList />
+    </PageContainer>
     
     
     );
