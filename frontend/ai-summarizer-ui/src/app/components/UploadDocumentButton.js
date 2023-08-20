@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
 import getData from '@/firebase/firestore/getData';
 import addData from '@/firebase/firestore/addData';
-import { useToast } from './ToastContext';
-
+// import { useToast } from './ToastContext';
+import { ToastContainer, toast } from 'react-toastify';
 import Button from '@mui/material/Button';
 
 const UploadFileButton = () => {
   const { user } = useAuthContext();
   const [selectedFile, setSelectedFile] = useState(null);
-  const showToast = useToast();
+  // const showToast = useToast();
   const handleFileChange = (event) => {
     const file = event.target.files && event.target.files[0];
 
@@ -19,7 +19,7 @@ const UploadFileButton = () => {
       if (fileType === 'text/plain') {
         setSelectedFile(file);
       } else {
-        showToast('Please upload a text file', 'error');
+        toast.error('Please upload a text file');
       }
     }
   };
@@ -52,10 +52,10 @@ const UploadFileButton = () => {
       });
       const newN = incrementFileString(n);
       await addData('users', user.uid, { next_file: newN });
-      showToast('Document Uploaded', 'success');
+      toast.success('Document Uploaded');
       setSelectedFile(null);
     } catch (error) {
-      showToast('Upload Error', 'error');
+      toast.error('Upload Error');
       console.error('Error uploading document:', error);
     }
   }
@@ -84,6 +84,7 @@ const UploadFileButton = () => {
       <Button variant="contained" onClick={handleUploadButton}>
         Upload
       </Button>
+      <ToastContainer/>
     </div>
   );
 };

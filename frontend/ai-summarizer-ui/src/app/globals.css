@@ -16,7 +16,34 @@
   }
 }
 
+/* Common Styles */
 body {
-  color: rgb(var(--foreground-rgb));
-
+  line-height: 1.5;
 }
+
+h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* ... Define styles for other header levels as needed */
+
+p {
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ... Add other common styles */

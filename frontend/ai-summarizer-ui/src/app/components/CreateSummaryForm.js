@@ -2,19 +2,24 @@
 import React, { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import getData from '@/firebase/firestore/getData';
+import addData from '@/firebase/firestore/addData';
 import UploadFileButton from "@/app/components/UploadDocumentButton";
 import PageContainer from '@/app/components/PageContainer';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import { Typography } from "@mui/material";
-import { useToast } from './ToastContext';
+import { ToastContainer, toast } from 'react-toastify';
+import { showToastError, showToastSuccess } from './Toaster'
+
 
 const CreateSummaryForm = () => {
-const { user } = useAuthContext()
-const router = useRouter()
+  const { user } = useAuthContext()
+  const router = useRouter()
   const [selectedFile, setSelectedFile] = useState(null);
-  const showToast = useToast();
+  const [extractions, setExtractions] = useState(3); // Default value for Extractions
+  const [combinations, setCombinations] = useState(2); // Default value for Combinations
 
   const handleFileChange = (event) => {
     const file = event.target.files && event.target.files[0];
@@ -24,45 +29,104 @@ const router = useRouter()
       if (fileType === 'text/plain') {
         setSelectedFile(file);
       } else {
-        showToast('Please upload a text file', 'error');
+        showToastError('Please upload a text file');
       }
     }
   };
 
-  const handleUploadButton = () => {
+
+  // FINISH LATER
+
+  const handleFinishLater = () => {
     console.log('Button Pressed');
     getData('users',user.uid).then(
       data => {console.log(data.result.data())}
     )
-    if (selectedFile != null) {
+    if (selectedFile === null) {
+      showToastError('Upload a file');
+      return;
+    }
+
       const reader = new FileReader();
       reader.onload = (event) => {
         const content = event.target.result;
         console.log('content: ' + content);
-        uploadDoc(content); // Pass content to the uploadDoc function
+        uploadDoc(content, 'unfinished'); // Pass content to the uploadDoc function
       };
       reader.readAsText(selectedFile);
-    }
+    // const encodedUri = encodeURIComponent('uploaded');
+    router.push(`/summaries`);
   };
 
-  async function uploadDoc(content) {
+  // CREATE SUMMARY
+  const handleCreateSummary = () => {
+    if (selectedFile === null) {
+      showToastError('Upload a file');
+      return;
+    }
+    let id = ''
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target.result;
+      console.log('content: ' + content);
+      uploadDoc(content, 'processing').then((n) => {
+        try {
+          console.log('handleCreateSummary-->uploadDoc-->then Try Block');
+          const response = fetch('/api/start-job', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+               message: 'Start the job',
+               doc_id: `${n}`,
+               extractions: `${extractions}`,
+               combinations: `${combinations}`
+            }),
+          });
+    
+          if (response.ok) {
+            console.log('Job started');
+          } else {
+            console.log('Failed to start job');
+          }
+        } catch (error) {
+          console.log('Error occurred');
+        }
+      }) // Pass content to the uploadDoc function
+    };
+    reader.readAsText(selectedFile);
+
+    // Onload will run here
+
+    // const encodedUri = encodeURIComponent('uploaded');
+
+
+    
+
+  }
+
+  async function uploadDoc(content, stat) {
+    let n = '';
     try {
       const userDataPromise = await getData('users', user.uid); 
       const userData = userDataPromise.result.data();
       console.log('User data: ' + userData.next_file);
-      const n = userData.next_file;
+      n = userData.next_file;
       await addData(`users/${user.uid}/files`, n, { 
         title: selectedFile.name,
-        body: content
+        body: content,
+        status: stat
       });
       const newN = incrementFileString(n);
       await addData('users', user.uid, { next_file: newN });
-      showToast('Document Uploaded', 'success');
+      showToastSuccess('Document Uploaded!');
       setSelectedFile(null);
     } catch (error) {
-      showToast('Upload Error', 'error');
+      showToastError('Upload Error');
       console.error('Error uploading document:', error);
     }
+    return n;
   }
 
   function incrementFileString(originalString) {
@@ -84,8 +148,7 @@ const router = useRouter()
     console.log("User ID: "+user['uid']);
     console.log(user);
 
-    const [extractions, setExtractions] = useState(3); // Default value for Extractions
-    const [combinations, setCombinations] = useState(2); // Default value for Combinations
+    
 
     const handleFetchButtonClick = () => {
         // Construct the URL with query parameters
@@ -99,6 +162,7 @@ const router = useRouter()
 
     return (
         <div>
+            {/* <ToastContainer/> */}
             <Typography variant="body" color="black">
             <input
             type="file"
@@ -137,10 +201,10 @@ const router = useRouter()
             </Box>
 
             {/* Fetch button */}
-            <Button variant="contained" onClick={handleFetchButtonClick}>
+            <Button variant="contained" onClick={handleCreateSummary}>
                 Create Summary
             </Button>
-            <Button variant="contained" onClick={handleFetchButtonClick}>
+            <Button variant="contained" onClick={handleFinishLater}>
                 Finish Later
             </Button>
             </Typography>

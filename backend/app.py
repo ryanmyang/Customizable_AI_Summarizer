@@ -1,6 +1,5 @@
-from flask import Flask, render_template
+from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
-from flask import jsonify
 import openai
 import os
 import io
@@ -25,6 +24,15 @@ def read_message(file):
 @app.route('/api/test-api')
 def test_api():
     return jsonify({"response": "Test API"})
+
+@app.route('/api/start-job', methods=['POST'])
+def start_job():
+    data = request.json
+    print(data)
+    # Start the job based on the data received
+    # Process the data or trigger the job as needed
+    # You can return a response to indicate the request was received
+    return jsonify({'message': 'Job start request received'})
 
 
 
@@ -233,6 +241,6 @@ def index():
 
 if __name__ == '__main__':
     # main()
-    test_gpt35_16K()
+    # test_gpt35_16K()
     app.run()
 

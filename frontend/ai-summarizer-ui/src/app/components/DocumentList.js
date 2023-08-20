@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import firebase_app from "@/firebase/config";
+import '@/app/globals.css'
+
 
 
 const DocumentList = () => {
