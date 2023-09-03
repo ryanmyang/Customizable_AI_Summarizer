@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.testclient import TestClient
+from fastapi.responses import JSONResponse
 from dotenv import load_dotenv
 import openai
 import os
@@ -23,19 +24,19 @@ celery = Celery(
 
 # Input
 def read_ref(file):
-    filepath = os.path.join("backend", "refs", file)
+    filepath = os.path.join("refs", file)
     with open(filepath, "r") as f:
         output = f.read()
     return output
 
 def read_message(file):
-    filepath = os.path.join("backend", "messages", file)
+    filepath = os.path.join("messages", file)
     with open(filepath, "r") as f:
         output = f.read()
     return output
 
 def write_gpt_log(filename, response, instructions, transcript):
-    filepath = os.path.join("backend","logs", filename)
+    filepath = os.path.join("logs", filename)
     instructions = "" if instructions is None else instructions
     with open(filepath, "w") as f:
         f.write(response)
@@ -89,16 +90,18 @@ async def start_job(request: Request):
 
     path = f'users/{uid}/summaries'
     summary_doc_path = add_data(path, firestore_data)
-    transcript = get_data(f'users/{uid}/files', doc_id)
+    transcript = get_data(f'users/{uid}/files', doc_id)['transcript']
+    print(f'THIS IS THE TRANSCRIPT: {transcript}')
 
-    task = process.delay(summary_doc_path, transcript, extractions, combinations)
+    task = process.delay(summary_doc_path, transcript, int(extractions),int(combinations))
 
-    return {'message': 'Job starting'}
+    response = {'message': 'Job starting', 'transcript': transcript}
+    return JSONResponse(content=response)
 
 ###############################################################################################################
 # Output
-@celery.task
-def process(sum_path, transcript, extraction_count, combine_count):
+@celery.task(name="process")
+def process(sum_path, transcript, extraction_count: int, combine_count: int):
     print("\n\n\n STARTING PROCESS \n\n\n")
     # Load API Key
     load_dotenv()
@@ -109,10 +112,10 @@ def process(sum_path, transcript, extraction_count, combine_count):
     ##### CONTROLS #####
     ####################
 
-    transcript = read_ref("chevron")
+    # transcript = read_ref("chevron")
     # transcript2 = read_ref("chevron_2")
     system_instructions = read_message("system_extract")
-    system_questions = read_message("system_questions")
+    # system_questions = read_message("system_questions")
     combine_sys = read_message("system_combine")
     sort_sys = read_message("system_sort")
 
@@ -131,10 +134,9 @@ def process(sum_path, transcript, extraction_count, combine_count):
 
     ## First Grab out the points multiple times
 
-
     all_responses = ""
     ### Grab out points a few times
-    for i in range(extraction_count):
+    for i in range(int(extraction_count)):
 
         ## GPT CALL
         all_responses += completion_text(gpt(1,system_instructions, transcript,log_time+"_e_"+str(i))) + '\n'
@@ -145,6 +147,8 @@ def process(sum_path, transcript, extraction_count, combine_count):
     # QUIT FOR TESTING
     # quit()
     ### Combine
+    print("TEST POINT")
+
     last_combined = all_responses
     for i in range(combine_count):
         # GPT CALL

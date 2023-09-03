@@ -71,7 +71,8 @@ const CreateSummaryForm = () => {
       uploadDoc(content, 'processing').then((n) => {
         try {
           console.log('handleCreateSummary-->uploadDoc-->then Try Block');
-          const response = fetch('/api/start-job', {
+
+          fetch('/api/start-job', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${user.uid}`,
@@ -82,16 +83,19 @@ const CreateSummaryForm = () => {
                extractions: `${extractions}`,
                combinations: `${combinations}`
             }),
-          });
-    
-          if (response.ok) {
-            console.log('Job started');
-          } else {
-            console.log('Failed to start job');
-          }
+          })
+          .then(response => response.json())
+          .then(data => {
+              console.log("RESPONSE: " + data.transcript)
+              if (message == "Job starting") {
+                console.log("Job Starting")
+              }
+          })
+
         } catch (error) {
           console.log('Error occurred');
         }
+
       }) // Pass content to the uploadDoc function
     };
     reader.readAsText(selectedFile);
