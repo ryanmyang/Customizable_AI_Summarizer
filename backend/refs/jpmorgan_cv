@@ -1,0 +1,113 @@
+I am going to provide you with a job description from JP Morgan, examples of past cover letters I wrote, and my resume, and I want you to write a new cover letter using the information of the job description and resume, and somewhat matching the structucture of the past resume. Do not be overly wordy.
+
+START JOB DESCRIPTION
+
+
+Valued qualities
+
+We’re looking for enthusiastic, capable and motivated computer science and/or engineering majors who want to directly contribute to our business from day one. No matter your background, we’re looking for those with a strong interest in financial services and excellent coding skills. Our teams work collaboratively, so we’re looking for those who have excellent teamwork and demonstrated leadership abilities.
+
+ 
+
+Key skills
+
+You should have excellent coding skills, be able to manage relationships with clients, and have exceptional problem solving and analytical thinking skills. We’re looking for those who are intellectually curious, collaborative and open to new challenges, as well as being able to take ownership of projects to bring them to fruition.
+END JOB DESCRIPTION
+
+START PAST COVER LETTER 1
+TAG Collective
+Developer Intern (Fall/Winter 2022)
+
+I would love to be able to make a strong contribution to the products and stories that your team creates. I’m very self motivated and will do my best to integrate with your systems to be effective in using web and app development to turn your content and stories into streamlined and enjoyable user experiences. I’m extremely interested in your agency’s work and your unique Storyscaling strategy, as my experiences with my own business and youtube channels have made me realize both the importance and also the difficulty of marketing and brand building. Some highlights of what can make me valuable to your team includes:
+Hands-on experience with turning complex ideas into easily digestible and engaging forms - My experiences successfully running youtube channels in the past and marketing the products for my most recent project has given me practice with selecting and focusing on the most important aspects of a product/idea I am trying to sell, and communicating that to an audience in a way that is very engaging.
+I am a very driven self-starter who is eager to learn new skills and apply them in business-minded ways - Managing a variety of projects has given me varied practical experience in different aspects of managing a large project: From starting a profitable business where I design, prototype, manufacture, market, and sell custom mechanical keyboard cases, to my youtube channel where I did lots of market research, targeted specific audiences using seo, advertisement in niche forums, and community building, and created programming tutorials with a fine-tuned balance of educational merit and entertainment value
+I have had lots of experience turning fun learning experiences into successful (and profitable) ventures. I believe that these experiences, and the skills that I learned through them, would make me a very valuable asset to your team.
+
+END PAST COVER LETTER 1
+
+START PAST COVER LETTER 2
+Fluor
+IT Technician I
+
+To whom it may concern,
+
+I am writing to express my strong interest in the Information Technology (IT) Technician position at Fluor. As a highly motivated individual deeply interested in technology, I am confident that my skills and experiences align with the requirements of this position. Throughout my academic and professional journey, I have gained valuable experience in supporting and maintaining computer systems, diagnosing and troubleshooting hardware issues, and providing end-user assistance.
+
+In my experience as both a body tracking intern at my bionics lab, and as the software lead for my team in Rocket Project UCLA, I had lots of experience with implementing programs with new software and hardware into systems I had never seen before, and demonstrated by ability to troubleshoot complex systems. The multitude of obstacles in these positions gave me lots of hands-on experience in diagnosing and resolving software and hardware-related issues, as well as collaborating and communicating the solutions to others.
+
+In addition to my technical expertise, I possess strong documentation skills, having written detailed records on complicated software system architecture and workflows we use in both my X1 robotics club at UCLA and Rocket Project. I excel at creating organized and comprehensive documentation to ensure clarity and accessibility.
+
+Being deeply immersed in technology for essentially all of my life, I have honed my ability to solve tech-related problems over many years, and I know that I would be able to make a strong contribution in this IT technician role. 
+
+Thank you for considering my application. I have attached my resume for your review. I look forward to the possibility of contributing to the success of Fluor
+END PAST COVER LETTER 2
+
+START RESUME
+
+
+EDUCATION
+University of California, Los Angeles	 	            Expected June 2026
+B.S. in Computer Science, Samueli School of Engineering                                                           
+GPA: 3.9 || Relevant Coursework: Data Structures and Algorithms, Multivariable Calculus
+Portola High School, Irvine, CA                                                                                                                June 2019 - June 2022
+GPA: 4.42 (W) / 4.0 (UW) ||  Max score on AP Tests: CS P, CS A (Java), Physics 1 & C, Stats, Calc BC
+LEADERSHIP & WORK 
+Fluor
+Enterprise Applications Software Intern 								            	July 2023 - Present
+Streamlined QA test case data migration, creating VBA automation scripts to reduce time per doc conversion by 90%
+Programmed earnings call summarizer AI web app, reduced hours required for task by 80%, used ChatGPT4 API, Python Flask Backend, NextJS/React Frontend, Firebase
+Initiated revamping of intern onboarding, interviewing 8+ departments to optimize and increase efficiency of process
+UCLA Bionics Lab	           			 					      	      
+VR and Body Tracking Intern 								            February 2023 - Present
+Expanded pose calibration system to allow VR program to work with stroke patients of varying levels of disability
+Improving body tracking accuracy through sensor fusion and pose averaging using C# in Unity
+Researching & implementing dynamic difficulty adjustment of VR rehabilitation exercises for maximum engagement
+Rocket Project	UCLA								           
+
+Software Team Lead
+September 2022 - Present
+
+Led design of data acquisition system’s software architecture for the synthesis of avionics data with ground systems data, creating Python scripts for data conversion and processing, and Grafana for data visualization
+Programming Arduinos for avionics data collection and transmission to ground, optimized data transfer rate
+Collaborating with electronics leads to design redundant telemetry & control systems
+
+Keyboard Armory (Company that designs and sells specialty keyboard cases)
+
+Founder 
+February 2022 - Present
+
+Conducted market research on 250+ keyboards, identified market void for certain premium ergonomic case designs
+Modeled and prototyped 8+ unique case designs through CAD, 3D printing, and machining, using iterative design to optimize for varying levels of stability, aesthetics, part compatibility, premium feel, and ease of assembly
+Collaborated with overseas manufacturers to CNC, plasma cut, and die cut material for products and packaging
+Managed timeline, budget, and communication with suppliers & manufacturers to streamline supply and production
+Marketed using social media & forums, sold 300+ units to 10+ countries for $24K revenue with a 30% margin
+FIRST Robotics Team 7447 - Portola High School           
+
+President (yr. 4), CAD Lead (yr 3), Manufacturing Lead (yr 2)
+September 2018 - May 2022
+
+Captained team of 30 active members to the quarterfinals of the Orange-County Regional Tournament in 2022
+Led mechanism design and prototyping involving collaborative CAD, machining, & electronics integration
+Played key role in designing end-effector, led to best OC Rookie team and world championship qualification 2019
+PROJECTS 
+American Society of Mechanical Engineers Project X1 Programmer             			 January 2023 - June 2023
+Programmed Raspberry Pi (RPi) in Python for wireless control and inverse kinematics (IK) implementation
+Designed state controller architecture for robotic quadruped behavior based on controller input, sensor data, and IK
+Developed C++ Arduino servo control code for optimized modularity, rapid testing, and easy integration of system
+Facilitated Arduino and RPi device communication to integrate control, sensor, and processing systems
+
+Programming Youtube Channel
+May 2019 - June 2022
+
+Simplified and taught complex programming concepts through concise, easy-to-follow examples within Minecraft to encourage new programmers to practice and learn in an engaging way, 5 million views and 20,000 subscribers
+Designed bot to sort & direct questions for online support forum with over 3K active members
+SKILLS & INTERESTS
+
+Technical Skills: 
+Experienced in Python, C#, C++, Javascript. Some experience in SQL, Swift and Java
+7 years of CAD experience (Fusion 360 and SolidWorks)
+9 years of programming inc: 3D printing gcode file postprocessor (python), iphone automation (javascript), VR game physics proof of concepts (C#), spreadsheet web scraping processor (python), collaborative document editor (javascript, React, Firebase)
+Other Interests: 
+Trying new cuisines, brewing the perfect shot of espresso, woodworking, traveling, 3D printing, hiking
+
+END RESUME

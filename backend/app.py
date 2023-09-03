@@ -4,6 +4,7 @@ import openai
 import os
 import io
 import datetime
+from firebase_utils import add_data
 app = Flask(__name__)
 
 log_content = ""
@@ -27,11 +28,26 @@ def test_api():
 
 @app.route('/api/start-job', methods=['POST'])
 def start_job():
+    uid = request.headers.get('Authorization')[7:]  # Remove 'Bearer ' from the token
+
     data = request.json
-    print(data)
-    # Start the job based on the data received
-    # Process the data or trigger the job as needed
-    # You can return a response to indicate the request was received
+    doc_id = data['doc_id']
+    extractions = data['extractions']
+    combinations = data['combinations']
+    # Construct the data to be added to Firestore
+
+
+    firestore_data = {
+        'doc_id': doc_id,
+        'extractions': extractions,
+        'combinations': combinations,
+        'body': 'processing'
+    }
+
+    # Use add_data to add the document to the Firestore collection
+    path = f'users/{uid}/summaries'
+    add_data(path, firestore_data)
+
     return jsonify({'message': 'Job start request received'})
 
 
@@ -151,12 +167,12 @@ def test_gpt35_16K():
     openai.api_key = os.getenv('API_KEY')
 
     log_time = datetime.datetime.now().strftime("%m-%d-%H-%M-%S")
-    usr = read_ref('six_landscapes')
-    response = gpt(1,None, usr, log_time+'_hum2')
+    usr = read_ref('jpmorgan_cv')
+    response = gpt(1,"You are a helpful bot that takes in information about a job and person to write a cover letter based on past provided examples.", usr, log_time+'_test35')
     print(completion_text(response))
 
 
-def main():
+def process(transcript):
     # Load API Key
     load_dotenv()
     openai.api_key = os.getenv('API_KEY')
@@ -191,44 +207,30 @@ def main():
     ### Chat GPT
 
     ## First Grab out the points multiple times
-    if chat_on:
 
-        all_responses = ""
-        ### Grab out points a few times
-        for i in range(summary_count):
 
-            ## GPT CALL
-            all_responses += completion_text(gpt(1,system_instructions, transcript,log_time+"_e_"+str(i))) + '\n'
-            # all_responses += completion_text(gpt(1,system_instructions, transcript2,log_time+"_e2_"+str(i))) + '\n'
+    all_responses = ""
+    ### Grab out points a few times
+    for i in range(summary_count):
 
-        # question_answers = completion_text(gpt(0,"", read_message("system_questions2") + transcript,log_time+"_q"))
-        # all_responses += question_answers + '\n'
-# QUIT FOR TESTING
-        # quit()
-        ### Combine
-        last_combined = all_responses
-        for i in range(combine_count):
-            prev_combined = last_combined
-            # GPT CALL
-            last_combined = completion_text(gpt(0,combine_sys, last_combined,log_time+"_c_"+str(i)))
-
-        ### Sorted
         ## GPT CALL
-        sorted = gpt(0,sort_sys,last_combined,log_time+"_s")
+        all_responses += completion_text(gpt(1,system_instructions, transcript,log_time+"_e_"+str(i))) + '\n'
+        # all_responses += completion_text(gpt(1,system_instructions, transcript2,log_time+"_e2_"+str(i))) + '\n'
 
+    # question_answers = completion_text(gpt(0,"", read_message("system_questions2") + transcript,log_time+"_q"))
+    # all_responses += question_answers + '\n'
+    # QUIT FOR TESTING
+    # quit()
+    ### Combine
+    last_combined = all_responses
+    for i in range(combine_count):
+        # GPT CALL
+        last_combined = completion_text(gpt(0,combine_sys, last_combined,log_time+"_c_"+str(i)))
 
-    # else:
-    #     for i in range(summary_count):
-    #         responses.append("Summary Test" + str(i))
-    #         log = write_gpt_log(log_time+"_"+str(i),responses[i], system_instructions, transcript)
-
-    ## Then loop through the logs, pull out responses, and combine
-    
-    ## Then sort
-    
-    
-    # with open(os.path.join("backend","logs", log), "r") as f:
-    #     log_content = f.read()
+    ### Sorted
+    ## GPT CALL
+    sorted = gpt(0,sort_sys,last_combined,log_time+"_s")
+    return sorted
 
 
 

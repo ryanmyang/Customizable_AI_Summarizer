@@ -64,7 +64,6 @@ const CreateSummaryForm = () => {
       showToastError('Upload a file');
       return;
     }
-    let id = ''
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target.result;
@@ -75,10 +74,10 @@ const CreateSummaryForm = () => {
           const response = fetch('/api/start-job', {
             method: 'POST',
             headers: {
+              Authorization: `Bearer ${user.uid}`,
               'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-               message: 'Start the job',
                doc_id: `${n}`,
                extractions: `${extractions}`,
                combinations: `${combinations}`
