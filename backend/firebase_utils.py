@@ -25,6 +25,7 @@ def add_data(collection, data: dict):
     return path
 
 def set_data(path, data, merge = True):
+    print(f'Setting data at {path} with data {str(data)}')
     path_elements = path.split('/')
     doc_id=path_elements.pop(-1)
     collection_path = '/'.join(path_elements)
@@ -48,4 +49,5 @@ if __name__ == '__main__':
     print('Adding test:value')
     add_data('users/kfMkPJYQCEaHuamphApNeN8YcSy1/files', {'test':'value'})
     document = get_data('users/kfMkPJYQCEaHuamphApNeN8YcSy1/files','044')
+    set_data('users/kfMkPJYQCEaHuamphApNeN8YcSy1/summaries/okkenK8TuMDrIZSjCc7k',{"body":"test"})
     # print(document['body'])

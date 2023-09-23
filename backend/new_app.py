@@ -103,6 +103,8 @@ async def start_job(request: Request):
 @celery.task(name="process")
 def process(sum_path, transcript, extraction_count: int, combine_count: int):
     print("\n\n\n STARTING PROCESS \n\n\n")
+    print(f"Processing: {sum_path}, {transcript}, {extraction_count}, {combine_count}")
+
     # Load API Key
     load_dotenv()
     openai.api_key = os.getenv('API_KEY')
@@ -147,7 +149,6 @@ def process(sum_path, transcript, extraction_count: int, combine_count: int):
     # QUIT FOR TESTING
     # quit()
     ### Combine
-    print("TEST POINT")
 
     last_combined = all_responses
     for i in range(combine_count):
@@ -156,13 +157,13 @@ def process(sum_path, transcript, extraction_count: int, combine_count: int):
 
     ### Sorted
     ## GPT CALL
-    sorted = gpt(0,sort_sys,last_combined,log_time+"_s")
-
+    sorted = completion_text(gpt(0,sort_sys,last_combined,log_time+"_s"))
+    
     data = {
         'body': f'{sorted}'
     }
     set_data(sum_path,data)
-    print(f"Processing: {sum_path}, {transcript}, {extraction_count}, {combine_count}")
+    print("Finished Processing")
     return "Task Completed"
 
 
