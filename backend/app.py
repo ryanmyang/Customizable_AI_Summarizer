@@ -5,14 +5,14 @@ import os
 import io
 import datetime
 from firebase_utils import add_data, get_data, set_data
-from celery import Celery
+# from celery import Celery
 
 
-celery = Celery(
-    'tasks',
-    broker='redis://localhost:6379/0',  # Replace with your broker URL
-    backend='rpc'  # You can change this backend based on your needs
-)
+# celery = Celery(
+#     'tasks',
+#     broker='redis://localhost:6379/0',  # Replace with your broker URL
+#     backend='rpc'  # You can change this backend based on your needs
+# )
 
 app = Flask(__name__)
 
@@ -61,10 +61,6 @@ def start_job():
     task = process.delay(uid, summary_doc_ref, transcript, extractions, combinations)
 
     return jsonify({'message': 'Job starting'})
-
-
-
-
 # Output
 
 # Write to
@@ -79,7 +75,7 @@ def write_gpt_log(filename, response, instructions, transcript):
         f.write(transcript)
     return len(response.splitlines())
 
-
+#region Old GPT Functions
 # def gpt35_16k(sys, usr):
 #     print('GPT 3.5 Turbo 16K Called')
 #     completion = openai.ChatCompletion.create(
@@ -112,6 +108,7 @@ def write_gpt_log(filename, response, instructions, transcript):
 #         ]
 #         )
 #     return completion
+#endregion
 
 def gpt(model_num, sys,usr, log_name):
     print('GPT Called: ' + MODELS[model_num])
@@ -183,7 +180,7 @@ def completion_text(c):
 #     response = gpt(1,"You are a helpful bot that takes in information about a job and person to write a cover letter based on past provided examples.", usr, log_time+'_test35')
 #     print(completion_text(response))
 
-@celery.task
+
 def process(sum_ref, transcript, extraction_count, combine_count):
     print("\n\n\n STARTING PROCESS \n\n\n")
     # Load API Key

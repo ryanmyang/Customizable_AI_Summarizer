@@ -6,16 +6,17 @@ import React from 'react';
 const CallMainButton: React.FC = () => {
   const handleClick = async () => {
     try {
-      const response = await fetch('/api/test-api');
+      const response = await fetch('/api/');
+      console.log("Response: " + JSON.stringify(response))
       const data = await response.json();
-      console.log(data.response); // Display the response in the console (you can update the state or display it on the UI)
+      console.log(data); // Display the response in the console (you can update the state or display it on the UI)
     } catch (error) {
-      console.error('Er1ror fetching data:', error);
+      console.error('Error fetching data:', error);
     }
   };
 
   return (
-    <button onClick={handleClick}>Call Main Function</button>
+    <button onClick={handleClick}>Call Test Function</button>
   );
 };
 
