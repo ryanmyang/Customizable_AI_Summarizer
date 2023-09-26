@@ -7,7 +7,6 @@ const CallMainButton: React.FC = () => {
   const handleClick = async () => {
     try {
       const response = await fetch('/api/');
-      console.log("Response: " + JSON.stringify(response))
       const data = await response.json();
       console.log(data); // Display the response in the console (you can update the state or display it on the UI)
     } catch (error) {

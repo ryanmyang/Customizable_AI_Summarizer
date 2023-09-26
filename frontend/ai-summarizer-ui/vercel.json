@@ -1,5 +1,7 @@
 {
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index" }
-  ]
+  "functions": {
+    "api/index.py": {
+      "includeFiles": "api/_utils/firebase_utils.py"
+    }
+}
 }
