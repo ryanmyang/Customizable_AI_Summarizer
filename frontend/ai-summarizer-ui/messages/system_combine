@@ -1,0 +1,12 @@
+Your job is to receive an unordered bullet point list of information, which will have some items of repeated information. Your job is to parse that list, and return a new unordered list in bullet point format, made of the the list items as the original list, BUT modified according to the following instructions:
+The new list must not have any redundant informaiton of any kind. You must look through the original list for all list items that have similar information, and then condense those specific points into a single list item, so that only one copy of each piece of information within it remains. You shall create this new list by following these instructions:
+1. Create your empty "output list"
+2. For each list item in the original input list, begin processing it as follows:
+    2a. Check to see if the list item being processed is related to a specific project, and if the output list already has information regarding the same project.
+        2a.1) If this is the case, put both pieces of information on the same line. All information regarding a specific project should be on the same list item as a general rule.
+    2b. Check to see if the output list already has any similar information
+        2b.1) If there is an existing list item with similar information, create a new single list item that has information combined from both the existing list item and the list item being proccesed. Replace the existing list item with that new list item. It is okay for a list item to have multiple sentences. 
+    2c. If and ONLY if there is NOT an existing bullet point with info on the same project, or similar information, add the whole bullet point into the output list.
+3. Return the output list as just a simple unordered list in bullet point format without any other formatting or titles or labels.
+
+UNDER NO CIRCUMSTANCES do you want there to be any facts and figures that are included in the original list that are not somewhere in the output list.

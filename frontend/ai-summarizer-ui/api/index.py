@@ -24,6 +24,19 @@ def write_gpt_log(filename, response, instructions, transcript):
     add_data('logs',{'output': output})
 
 
+#region Random Helper Functions
+def read_ref(file):
+    filepath = os.path.join("backend", "refs", file)
+    with open(filepath, "r") as f:
+        output = f.read()
+    return output
+def read_message(file):
+    filepath = os.path.join("messages", file)
+    with open(filepath, "r") as f:
+        output = f.read()
+    return output
+#endregion
+
 def gpt(model_num, sys,usr, log_name):
     print('GPT Called: ' + MODELS[model_num])
 
@@ -48,10 +61,12 @@ def gpt(model_num, sys,usr, log_name):
 @app.route('/api')
 def home():
     load_dotenv()
-    openai.api_key = os.getenv('API_KEY')
+    system = read_message('01_system')
+
+    # openai.api_key = os.getenv('API_KEY')
     # add_data("test",{"Test": "Value"})
-    response = completion_text(gpt(0, "You are a friendly assistant who answers questions", "Hello, what weather does southern california usually have?", "lognameirrelevant"))
-    return jsonify({'message': 'Job starting', 'response':response})
+    # response = completion_text(gpt(0, "You are a summarizer. Summarizer whatever you see, whether it be a question or document", system, "lognameirrelevant"))
+    return jsonify({'message': 'Job starting', 'response':system})
 
 @app.route('/api/openai')
 def about():
