@@ -72,7 +72,7 @@ const CreateSummaryForm = () => {
         try {
           console.log('handleCreateSummary-->uploadDoc-->then Try Block');
 
-          fetch('/api/start-job', {
+          fetch('/api/openai', {
             method: 'POST',
             headers: {
               Authorization: `Bearer ${user.uid}`,
