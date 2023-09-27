@@ -4,7 +4,7 @@ import openai
 import os
 import io
 import datetime
-from _utils.firebase_utils import add_data, get_data, set_data
+from ._utils.firebase_utils import add_data, get_data, set_data
 
 app = Flask(__name__)
 
