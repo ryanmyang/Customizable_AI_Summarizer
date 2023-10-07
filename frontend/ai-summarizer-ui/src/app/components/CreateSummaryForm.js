@@ -75,7 +75,7 @@ const CreateSummaryForm = () => {
             const docref = addData(`users/${user.uid}/jobs`, {
               parent_doc:`${n}`,
               parent_title:`${title}`,
-              status: 'Not Started',
+              status: 0,
               extractions: `${extractions}`,
               combinations: `${combinations}`
 

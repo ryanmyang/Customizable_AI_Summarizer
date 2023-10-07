@@ -58,8 +58,12 @@ def gpt(model_num, sys,usr, log_name):
     write_gpt_log(log_name, completion_text(completion), sys, usr)
     return completion
 
-@app.route('/api')
-def home():
+@app.route('/api/processes/main')
+def process():
+    pass
+
+@app.route('/api/processes/test')
+def test():
     load_dotenv()
     system = read_message('01_system')
 
