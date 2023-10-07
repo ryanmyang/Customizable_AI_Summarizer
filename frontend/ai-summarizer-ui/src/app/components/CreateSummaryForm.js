@@ -3,7 +3,9 @@ import React, { useState } from "react";
 import { useAuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import getData from '@/firebase/firestore/getData';
+import setData from '@/firebase/firestore/setData';
 import addData from '@/firebase/firestore/addData';
+
 import UploadFileButton from "@/app/components/UploadDocumentButton";
 import PageContainer from '@/app/components/PageContainer';
 import Button from '@mui/material/Button';
@@ -68,29 +70,38 @@ const CreateSummaryForm = () => {
     reader.onload = (event) => {
       const content = event.target.result;
       console.log('content: ' + content);
-      uploadDoc(content, 'processing').then((n) => {
+      uploadDoc(content, 'processing').then(([n, title]) => {
         try {
-          console.log('handleCreateSummary-->uploadDoc-->then Try Block');
+            const docref = addData(`users/${user.uid}/jobs`, {
+              parent_doc:`${n}`,
+              parent_title:`${title}`,
+              status: 'Not Started',
+              extractions: `${extractions}`,
+              combinations: `${combinations}`
 
-          fetch('/api/openai', {
-            method: 'POST',
-            headers: {
-              Authorization: `Bearer ${user.uid}`,
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-               doc_id: `${n}`,
-               extractions: `${extractions}`,
-               combinations: `${combinations}`
-            }),
-          })
-          .then(response => response.json())
-          .then(data => {
-              console.log("RESPONSE: " + data.transcript)
-              if (message == "Job starting") {
-                console.log("Job Starting")
-              }
-          })
+            })
+          // OLD CODE - Called api directly with json data
+          // console.log('handleCreateSummary-->uploadDoc-->then Try Block');
+
+          // fetch('/api/openai', {
+          //   method: 'POST',
+          //   headers: {
+          //     Authorization: `Bearer ${user.uid}`,
+          //     'Content-Type': 'application/json',
+          //   },
+          //   body: JSON.stringify({
+          //      doc_id: `${n}`,
+          //      extractions: `${extractions}`,
+          //      combinations: `${combinations}`
+          //   }),
+          // })
+          // .then(response => response.json())
+          // .then(data => {
+          //     console.log("RESPONSE: " + data.transcript)
+          //     if (message == "Job starting") {
+          //       console.log("Job Starting")
+          //     }
+          // })
 
         } catch (error) {
           console.log('Error occurred');
@@ -110,46 +121,39 @@ const CreateSummaryForm = () => {
   }
 
   async function uploadDoc(content, stat) {
-    let n = '';
+    
     try {
-      const userDataPromise = await getData('users', user.uid); 
-      const userData = userDataPromise.result.data();
-      console.log('User data: ' + userData.next_file);
-      n = userData.next_file;
-      await addData(`users/${user.uid}/files`, n, { 
+      const { result, error } = await addData(`users/${user.uid}/files`, { 
         title: selectedFile.name,
-        body: content,
-        status: stat
+        body: content
       });
-      const newN = incrementFileString(n);
-      await addData('users', user.uid, { next_file: newN });
       showToastSuccess('Document Uploaded!');
-      setSelectedFile(null);
+      return [result.id, selectedFile.name];
     } catch (error) {
       showToastError('Upload Error');
       console.error('Error uploading document:', error);
     }
-    return n;
+    return [null, null];
   }
 
-  function incrementFileString(originalString) {
-    // Convert the original string to a number and increment
-    const incrementedNumber = parseInt(originalString, 10) + 1;
+  // function incrementFileString(originalString) {
+  //   // Convert the original string to a number and increment
+  //   const incrementedNumber = parseInt(originalString, 10) + 1;
 
-    // Determine the length of the original string
-    const originalLength = originalString.length;
+  //   // Determine the length of the original string
+  //   const originalLength = originalString.length;
 
-    // Format the incremented number with leading zeroes to match the original length
-    const formattedIncremented = String(incrementedNumber).padStart(originalLength, '0');
+  //   // Format the incremented number with leading zeroes to match the original length
+  //   const formattedIncremented = String(incrementedNumber).padStart(originalLength, '0');
 
-    return formattedIncremented;
-  }
+  //   return formattedIncremented;
+  // }
 
     React.useEffect(() => { 
         if (user == null) router.push("/")
     }, [user])
     console.log("User ID: "+user['uid']);
-    console.log(user);
+    // console.log(user);
 
     
 

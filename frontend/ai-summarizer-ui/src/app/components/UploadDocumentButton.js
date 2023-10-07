@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '@/context/AuthContext';
 import getData from '@/firebase/firestore/getData';
-import addData from '@/firebase/firestore/addData';
+import setData from '@/firebase/firestore/setData';
 // import { useToast } from './ToastContext';
 import { ToastContainer, toast } from 'react-toastify';
 import Button from '@mui/material/Button';
@@ -46,12 +46,12 @@ const UploadFileButton = () => {
       const userData = userDataPromise.result.data();
       console.log('User data: ' + userData.next_file);
       const n = userData.next_file;
-      await addData(`users/${user.uid}/files`, n, { 
+      await setData(`users/${user.uid}/files`, n, { 
         title: selectedFile.name,
         body: content
       });
       const newN = incrementFileString(n);
-      await addData('users', user.uid, { next_file: newN });
+      await setData('users', user.uid, { next_file: newN });
       toast.success('Document Uploaded');
       setSelectedFile(null);
     } catch (error) {

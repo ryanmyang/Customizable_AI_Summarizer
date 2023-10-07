@@ -1,7 +1,7 @@
 import firebase_app from "../config";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
-import addData from "@/firebase/firestore/addData"
+import setData from "@/firebase/firestore/setData"
 
 const auth = getAuth(firebase_app);
 const db = getFirestore(firebase_app);
@@ -18,7 +18,7 @@ export default async function signUp(email, password) {
             
             console.log(uid)
 
-            await addData("users", uid, {
+            await setData("users", uid, {
                 email: email,
                 next_file: '000'
             });

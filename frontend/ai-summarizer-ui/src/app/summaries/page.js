@@ -22,11 +22,14 @@ function Page() {
     // }
 
     React.useEffect(() => {
-        if (user == null) router.push("/")
+        if (user === null) {router.push("/")}
+        else {
+          console.log("User ID: "+user['uid']);
+          console.log(user);
+        }
     }, [user])
-    console.log("User ID: "+user['uid']);
-    console.log(user);
-
+    
+    
     const handleNewSummaryButton = () => {
         router.push("/summaries/new");
     }
