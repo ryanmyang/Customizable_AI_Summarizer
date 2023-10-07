@@ -3,13 +3,14 @@ import { useAuthContext } from '@/context/AuthContext';
 import { getFirestore, collection, getDocs } from 'firebase/firestore';
 import firebase_app from "@/firebase/config";
 import '@/app/globals.css'
+import Button from '@mui/material/Button';
 
 
 
 const DocumentList = () => {
   const { user } = useAuthContext();
-  const [documentIds, setDocumentIds] = useState([]);
-  const db = getFirestore(firebase_app)
+  const [docDatas, setDocDatas] = useState([]);
+  const db = getFirestore(firebase_app);
 
   useEffect(() => {
     // Fetch the list of document IDs
@@ -18,22 +19,40 @@ const DocumentList = () => {
 
   const fetchDocumentIds = async () => {
     try {
-      const filesCollectionRef = collection(db, `users/${user.uid}/files`);
+      const filesCollectionRef = collection(db, `users/${user.uid}/jobs`);
       const filesSnapshot = await getDocs(filesCollectionRef);
-        console.log(filesSnapshot);
-      const ids = filesSnapshot.docs.map(doc => doc.data().title);
-      setDocumentIds(ids);
+      const datas = filesSnapshot.docs.map(doc => [doc.data().parent_title,doc.data().parent_doc]);
+      setDocDatas(datas);
     } catch (error) {
       console.error('Error fetching document IDs:', error);
     }
+  };
+
+  const handleDocumentClick = (documentName) => {
+    // Handle the click event here, e.g., open the document
+    console.log(`Clicked on document: ${documentName}`);
   };
 
   return (
     <div>
       <h2>Document List</h2>
       <ul>
-        {documentIds.map(id => (
-          <li key={id}>{id}</li>
+        {docDatas.map((id, index) => (
+          <li key={index}>
+            <Button
+              fullWidth
+              variant="outlined"
+              color="primary"
+              onClick={() => handleDocumentClick(id[1])}
+              style={{ 
+
+                textTransform: 'none' ,
+                justifyContent: "flex-start"
+              }}
+            >
+              {id[0]}
+            </Button>
+          </li>
         ))}
       </ul>
     </div>
