@@ -7,7 +7,7 @@ import json
 print("LOADING FIREBASE UTILS\n\n\n")
 load_dotenv()
 service_account_key = os.getenv("SERVICE_ACCOUNT_KEY")
-print("ACCOUNT KEYYYYY\n\n\n" + service_account_key)
+# print("ACCOUNT KEYYYYY\n\n\n" + service_account_key)
 cred = credentials.Certificate(json.loads(service_account_key))
 firebase_admin.initialize_app(cred)
 

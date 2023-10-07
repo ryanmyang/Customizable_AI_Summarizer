@@ -63,9 +63,10 @@ def home():
     load_dotenv()
     system = read_message('01_system')
 
-    # openai.api_key = os.getenv('API_KEY')
-    # add_data("test",{"Test": "Value"})
-    # response = completion_text(gpt(0, "You are a summarizer. Summarizer whatever you see, whether it be a question or document", system, "lognameirrelevant"))
+    openai.api_key = os.getenv('API_KEY')
+    add_data("test",{"Test": "Value"})
+    response = completion_text(gpt(0, "You are a summarizer. Summarizer whatever you see, whether it be a question or document", system, "lognameirrelevant"))
+    add_data("test", {"conversion_result":response})
     return jsonify({'message': 'Job starting', 'response':system})
 
 @app.route('/api/openai')
